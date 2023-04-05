@@ -1,6 +1,3 @@
-import os
-os.environ["LANGCHAIN_HANDLER"] = "langchain"
-
 from langchain.agents import Tool
 from langchain.memory import ConversationBufferMemory
 from langchain import OpenAI
@@ -27,8 +24,21 @@ tools = [
 memory = ConversationBufferMemory(memory_key="chat_history")
 
 llm=OpenAI(openai_api_key=openai_api_key, temperature=0)
-agent_chain = initialize_agent(tools, llm, agent="conversational-react-description", verbose=True, memory=memory)
+agent_chain = initialize_agent(tools, llm, agent="conversational-react-description", verbose=False, memory=memory)
 
-agent_chain.run(input="Hi, I am Leong. What is the time in New York now?")
 
-agent_chain.run(input="What is my name?")
+while (True):
+    user_input = input()
+    output = agent_chain.run(user_input)
+    print(output)
+
+
+
+
+# input1 = "Hi, I am Leong. What is the time in New York now?"
+# output1 = agent_chain.run(input1)
+# print(output1)
+
+# input2 = "What is my name?"
+# output2 = agent_chain.run(input2)
+# print(output2)
