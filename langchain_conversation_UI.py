@@ -40,7 +40,7 @@ class ChatWrapper:
             history = history or []
             # If chain is None, that is because no API key was provided.
             if chain is None:
-                history.append((inp, "Please paste your OpenAI key to use"))
+                history.append((inp, "Please paste your OpenAI key to use. You can find your key in your User settings --> View API keys."))
                 return history, history
             # Set OpenAI key
             import openai
@@ -56,14 +56,14 @@ class ChatWrapper:
 
 chat = ChatWrapper()
 
-block = gr.Blocks(css=".gradio-container {background-color: lightgray}")
+block = gr.Blocks(css=".gradio-container {background-color: #9cc4d7}")
 
 with block:
     with gr.Row():
-        gr.Markdown("<h3><center>LangChain Demo</center></h3>")
+        gr.Markdown("<h3><center>Children Encyclopedia Demo</center></h3>")
 
         openai_api_key_textbox = gr.Textbox(
-            placeholder="Paste your OpenAI API key (sk-...)",
+            placeholder="Paste your OpenAI API key in the top-right box. You can find your key in your OpenAI User Settings --> View API keys.",
             show_label=False,
             lines=1,
             type="password",
@@ -74,26 +74,28 @@ with block:
     with gr.Row():
         message = gr.Textbox(
             label="What's your question?",
-            placeholder="What's the answer to life, the universe, and everything?",
+            placeholder="Ask a wide range of topics for primary school children - from Science and History to Geography, Culture, and Society",
             lines=1,
         )
         submit = gr.Button(value="Send", variant="secondary").style(full_width=False)
 
     gr.Examples(
         examples=[
-            "Hi! How's it going?",
-            "What should I do tonight?",
-            "Whats 2 + 2?",
+            "Tell me more about the ocean?",
+            "What is the time difference between Japan and Australia?",
+            "How do I improve my presentation skill?",
         ],
         inputs=message,
     )
 
-    gr.HTML("Demo application of a LangChain chain.")
+    gr.HTML("<H3>Introducing the simplified encyclopedia for kids! (demo version)</H3>")
+    gr.HTML("<b>Say goodbye to unanswered questions with our customized ChatGPT model, ready to assist your child's curiosity with accurate and engaging responses covering a vast array of subjects, from History and Geography to Science, Nature, Society, and beyond.</b>")
+    gr.HTML("<b>The information is presented in a comprehensible manner, which allows for easy understanding by children. Give your child the gift of knowledge today!</b>")
 
     gr.HTML(
-        "<center>Powered by <a href='https://github.com/hwchase17/langchain'>LangChain 🦜️🔗</a></center>"
-    )
-
+        "<center>Developed by Dr Leong Kuan Yew</a></center>")
+    gr.HTML("<center>Powered by <a href='https://platform.openai.com/docs/models/overview'>ChatGPT</a> and <a href='https://github.com/hwchase17/langchain'>LangChain 🦜️🔗</a></center>")
+    
     state = gr.State()
     agent_state = gr.State()
 

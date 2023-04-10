@@ -1,6 +1,6 @@
 from langchain.agents import Tool
 from langchain.memory import ConversationBufferMemory
-from langchain import OpenAI
+from langchain.chat_models import ChatOpenAI
 from langchain.utilities import GoogleSearchAPIWrapper
 from langchain.agents import initialize_agent
 
@@ -23,8 +23,10 @@ tools = [
 
 memory = ConversationBufferMemory(memory_key="chat_history")
 
-llm=OpenAI(openai_api_key=openai_api_key, temperature=0)
-agent_chain = initialize_agent(tools, llm, agent="conversational-react-description", verbose=False, memory=memory)
+llm=ChatOpenAI(openai_api_key=openai_api_key, 
+           model_name='gpt-3.5-turbo',
+           temperature=0)
+agent_chain = initialize_agent(tools, llm, agent="conversational-react-description", verbose=True, memory=memory)
 
 
 while (True):
