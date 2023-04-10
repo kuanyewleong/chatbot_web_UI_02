@@ -5,6 +5,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.utilities import GoogleSearchAPIWrapper
 from typing import List
 from langchain.schema import AgentAction, AgentFinish, HumanMessage
+from langchain.memory.buffer import ConversationBufferMemory
 
 import re
 import openai
@@ -22,10 +23,10 @@ openai.api_key = openai_api_key
 #     template = f.readlines()
 # template = str(template)
 
-template = """Answer the following questions as best as you can, but speaking as a teacher to young kid. 
+template = """Respond to the following queries as best as you can, but speaking as a teacher to young student. 
 You offer a wide range of topics for primary school children of age 8 to 12. From Science and History to Geography, Culture, and Society.
 You will explain in simple manners to enable children to understand. You will use simple language like a primary school teacher. 
-You are helpful, polite and straight to the point. You talk in happy tone and like to use relevant emoji.
+You are helpful, polite and straight to the point. You talk in happy tone and sometimes like to use relevant emoji.
 
 You have access to the following tools:
 
@@ -33,25 +34,21 @@ You have access to the following tools:
 
 Use the following format:
 
-Question: the input question you must answer
-Thought: you should always think about what to do
+Query: the input query you must answer
+Thought:  Do I need to use a tool? Yes
 Action: the action to take, should be one of [{tool_names}]
 Action Input: the input to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Input/Observation can repeat N times)
-Thought: I now know the final answer
-Final Answer: the final answer to the original input question
+When you have a response to say to the student, or if you do not need to use a tool, you MUST use the format:
+Thought: Thought: Do I need to use a tool? No. I now know the final answer
+Final Answer: the final answer to the original input query
 
-Begin! Remember to speak as a teacher to young kid when giving your final answer. Use lots of emojis.
+Begin! Remember you are speaking to young student when giving your final answer. Use relevant emojis sometimes.
 
-Question: {input}
+Query: {input}
 {agent_scratchpad}"""
 
-def remove_dialogue(text):
-    # Define regular expressions for dialogue structures
-    pattern = re.compile(r"AI:|Assistant:")    
-    text_return = re.sub(pattern, "", text)       
-    return text_return
 
 # Define which tools the agent can use to answer user queries
 search = GoogleSearchAPIWrapper(google_api_key=str(google_key[0]), google_cse_id=str(google_key[1]))
@@ -104,7 +101,7 @@ class CustomOutputParser(AgentOutputParser):
                 log=llm_output,
             )
         # Parse out the action and action input
-        regex = r"Action: (.*?)[\n]*Action Input:[\s]*(.*)"
+        regex = r"Action: (.*?)[\n]*Action Input:[\s]*(.*)"        
         match = re.search(regex, llm_output, re.DOTALL)
         if not match:
             raise ValueError(f"Could not parse LLM output: `{llm_output}`")
@@ -131,26 +128,27 @@ agent = LLMSingleActionAgent(
 
 agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True)
 
-def opening_text():    
-    topic = "Say the following line in some creative way:\n"
-    open = "Hi there, how may I help you?\n"    
-    all_prompt = topic + open
+# def opening_text():    
+#     topic = "Say the following line in some creative way:\n"
+#     open = "Hi there, how may I help you?\n"    
+#     all_prompt = topic + open
     
-    # Generate a text completion
-    response = openai.Completion.create(
-    model="text-ada-001",
-    prompt = all_prompt,    
-    temperature=0.9,
-    max_tokens=32,
-    top_p=1,
-    frequency_penalty=0,
-    presence_penalty=0.
-    )
-    # Print the generated text completion
-    print(response.choices[0].text)
+#     # Generate a text completion
+#     response = openai.Completion.create(
+#     model="text-ada-001",
+#     prompt = all_prompt,    
+#     temperature=0.9,
+#     max_tokens=32,
+#     top_p=1,
+#     frequency_penalty=0,
+#     presence_penalty=0.
+#     )
+#     # Print the generated text completion
+#     print(response.choices[0].text)
 
 
-opening_text()
+# opening_text()
+print("Hi there, how may I help you?\n")
 while (True):
     user_input = input()
     output = agent_executor.run(user_input)

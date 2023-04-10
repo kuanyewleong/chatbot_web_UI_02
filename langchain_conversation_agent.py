@@ -1,5 +1,5 @@
 from langchain.agents import Tool
-from langchain.memory import ConversationBufferMemory
+from langchain.memory.buffer import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
 from langchain.utilities import GoogleSearchAPIWrapper
 from langchain.agents import initialize_agent
