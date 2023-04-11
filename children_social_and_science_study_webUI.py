@@ -212,6 +212,8 @@ with block:
         "<center>Developed by Dr Leong Kuan Yew @ <a href='https://github.com/kuanyewleong'>MyTomorrowProjects</a></center>")
     gr.HTML("<center>Powered by <a href='https://platform.openai.com/docs/models/gpt-3-5'>GPT3.5-turbo</a> and <a href='https://github.com/hwchase17/langchain'>LangChain 🦜️🔗</a></center>")
     
+    gr.HTML("<br><br><center>You can rest assured that this site will not store nor capture your OpenAI API key, the key you paste in the box above is always encrypted and will be deleted upon the exit of each web session.</center></br></br>")
+    
     state = gr.State()
     agent_state = gr.State()
 
