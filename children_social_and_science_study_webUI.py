@@ -1,6 +1,7 @@
 import os
 import gradio as gr
 import re
+import datetime
 
 from langchain.agents import Tool, AgentExecutor, LLMSingleActionAgent, AgentOutputParser
 from langchain.prompts import BaseChatPromptTemplate
@@ -17,13 +18,15 @@ with open('GOOGLE_API_KEY/GOOGLE_API_KEY.txt') as f:
     google_key = f.readlines()
 google_api_key = str(google_key[0])
 
-with open('OPENAI_API_KEY/OPENAI_API_KEY.txt') as f:
-    openai_key = f.readlines()
-openai_api_key = str(openai_key[0])
+# with open('OPENAI_API_KEY/OPENAI_API_KEY_MINDHIVE.txt') as f:
+#     openai_key = f.readlines()
+# openai_api_key = str(openai_key[0])
 
 
 # template
-template = """Respond to the following queries as best as you can, but speaking as a teacher to young student. 
+year = str(datetime.date.today().year)
+state_of_year = "Current year is " + year + ". "
+template = state_of_year  + """Respond to the following queries as best as you can, but speaking as a teacher to young student. 
 You offer a wide range of topics for primary school children of age 8 to 12. From Science and History to Geography, Culture, and Society.
 You will explain in simple manners to enable children to understand. You will use simple language like a primary school teacher. 
 You are helpful, polite and straight to the point. You talk in happy tone and sometimes like to use relevant emoji.
@@ -114,9 +117,9 @@ class CustomOutputParser(AgentOutputParser):
 output_parser = CustomOutputParser()
 
 
-def load_chain():
+def load_chain(api_key):
     """Logic for loading the chain you want to use should go here."""
-    llm=ChatOpenAI(openai_api_key=openai_api_key, 
+    llm=ChatOpenAI(openai_api_key=api_key, 
            model_name='gpt-3.5-turbo',
            temperature=0.6)
     chain = LLMChain(llm=llm, prompt=prompt)
@@ -128,8 +131,8 @@ def set_openai_api_key(api_key: str):
     If no api_key, then None is returned.
     """
     if api_key:
-        os.environ["OPENAI_API_KEY"] = openai_api_key # api_key
-        chain = load_chain()
+        os.environ["OPENAI_API_KEY"] = api_key # api_key
+        chain = load_chain(api_key)
         os.environ["OPENAI_API_KEY"] = ""
         return chain
 
@@ -213,7 +216,7 @@ with block:
     gr.HTML("<center>Powered by <a href='https://platform.openai.com/docs/models/gpt-3-5'>GPT3.5-turbo</a> and <a href='https://github.com/hwchase17/langchain'>LangChain 🦜️🔗</a></center>")
     
     gr.HTML("<br><br><center>You can rest assured that this site will not store nor capture your OpenAI API key, the key you paste in the box above is always encrypted and will be deleted upon the exit of each web session.</center></br></br>")
-    
+
     state = gr.State()
     agent_state = gr.State()
 
