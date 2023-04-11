@@ -41,10 +41,10 @@ Action Input: the input to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Input/Observation can repeat N times)
 When you have a response to say to the student, or if you do not need to use a tool, you MUST use the format:
-Thought: Thought: Do I need to use a tool? No. I now know the final answer
+Thought: Do I need to use a tool? No. I now know the final answer
 Final Answer: the final answer to the original input query
 
-Begin! Remember you are speaking to young student when giving your final answer. Use relevant emojis sometimes.
+Begin! Remember to speak as a teacher to young student when giving your final answer. Use some relevant emojis.
 
 Query: {input}
 {agent_scratchpad}"""
@@ -118,7 +118,7 @@ def load_chain():
     """Logic for loading the chain you want to use should go here."""
     llm=ChatOpenAI(openai_api_key=openai_api_key, 
            model_name='gpt-3.5-turbo',
-           temperature=0.9)
+           temperature=0.6)
     chain = LLMChain(llm=llm, prompt=prompt)
     return chain
 
@@ -146,7 +146,7 @@ class ChatWrapper:
             history = history or []
             # If chain is None, that is because no API key was provided.
             if chain is None:
-                history.append((inp, "Please paste your OpenAI key to use. You can find your key in your User settings --> View API keys."))
+                history.append((inp, "Paste your OpenAI API key in the top-right box. You can find your key in your User settings --> View API keys."))
                 return history, history
             # Set OpenAI key
             import openai
@@ -177,7 +177,7 @@ with block:
         gr.Markdown("<h3><center>Children Encyclopedia Demo</center></h3>")
 
         openai_api_key_textbox = gr.Textbox(
-            placeholder="Paste your OpenAI API key in the top-right box. You can find your key in your OpenAI User Settings --> View API keys.",
+            placeholder="Please paste your OpenAI key to use. You can find your key in your OpenAI User Settings --> View API keys.",
             show_label=False,
             lines=1,
             type="password",
@@ -199,17 +199,18 @@ with block:
             "How do languages become extinct?",
             "What were the main tools used by humans during the Stone Age?",
             "How do I improve my presentation skill?",
+            "How does a touchscreen on a smartphone work?",
         ],
         inputs=message,
     )
 
-    gr.HTML("<H3>Introducing the simplified encyclopedia for kids! (demo version)</H3>")
-    gr.HTML("<b>Say goodbye to unanswered questions with our customized ChatGPT model, ready to assist your child's curiosity with accurate and engaging responses covering a vast array of subjects, from History and Geography to Space, Nature, Technology, Society, and beyond.</b>")
+    gr.HTML("<H3>Introducing a simplified encyclopedia for kids! (demo version)</H3>")
+    gr.HTML("<b>Say goodbye to unanswered questions with our customized ChatGPT model, ready to assist your child's curiosity with easy-to-understand responses covering a vast array of subjects, from History and Geography to Space, Nature, Technology, Society, and beyond.</b>")
     gr.HTML("<b>The information is presented in a comprehensible manner, which allows for easy understanding by children. Give your child the gift of knowledge today!</b>")
 
     gr.HTML(
         "<center>Developed by Dr Leong Kuan Yew @ <a href='https://github.com/kuanyewleong'>MyTomorrowProjects</a></center>")
-    gr.HTML("<center>Powered by <a href='https://platform.openai.com/docs/models/overview'>ChatGPT</a> and <a href='https://github.com/hwchase17/langchain'>LangChain 🦜️🔗</a></center>")
+    gr.HTML("<center>Powered by <a href='https://platform.openai.com/docs/models/gpt-3-5'>GPT3.5-turbo</a> and <a href='https://github.com/hwchase17/langchain'>LangChain 🦜️🔗</a></center>")
     
     state = gr.State()
     agent_state = gr.State()
@@ -224,3 +225,4 @@ with block:
     )
 
 block.launch(debug=True)
+# demo.launch(share=True)

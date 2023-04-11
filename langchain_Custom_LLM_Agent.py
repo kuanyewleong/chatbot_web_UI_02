@@ -41,10 +41,10 @@ Action Input: the input to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Input/Observation can repeat N times)
 When you have a response to say to the student, or if you do not need to use a tool, you MUST use the format:
-Thought: Thought: Do I need to use a tool? No. I now know the final answer
+Thought: Do I need to use a tool? No. I now know the final answer
 Final Answer: the final answer to the original input query
 
-Begin! Remember you are speaking to young student when giving your final answer. Use relevant emojis sometimes.
+Begin! Remember to speak as a teacher to young student when giving your final answer. Use lots of emojis.
 
 Query: {input}
 {agent_scratchpad}"""
